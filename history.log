@@ -1,0 +1,18 @@
+iostat -xm 5 #io
+vmstat 1 #cpu
+
+QUICK SUMMARY
+CPU time is the first thing to examine when looking at performance of an application.
+The goal in optimizing code is to drive the CPU usage up (for a shorter period of time), not down.
+Understand why CPU usage is low before diving in and attempting to tune an application.
+
+QUICK SUMMARY
+Monitoring disk usage is important for all applications. For applications that donât directly write to disk, system swapping can still affect their performance.
+Applications that write to disk can be bottlenecked both because they are writing data inefficiently (too little throughput) or because they are writing too much data (too much throughput).
+
+
+nicstat 5 # network
+
+QUICK SUMMARY
+For network-based applications, make sure to monitor the network to make sure it hasnât become a bottleneck.
+Applications that write to the network can be bottlenecked both because they are writing data inefficiently (too little throughput) or because they are writing too much data (too much throughput).
