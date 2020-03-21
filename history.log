@@ -16,3 +16,36 @@ nicstat 5 # network
 QUICK SUMMARY
 For network-based applications, make sure to monitor the network to make sure it hasnât become a bottleneck.
 Applications that write to the network can be bottlenecked both because they are writing data inefficiently (too little throughput) or because they are writing too much data (too much throughput).
+
+
+JVM tools
+jcmd 43483 PerfCounter.print
+
+jconsole
+Provides a graphical view of JVM activities, including thread usage, class usage, and GC activities
+jhat
+Reads and helps analyze memory heap dumps. This is a post-processing utility.
+jmap
+Provides heap dumps and other information about JVM memory usage. Suitable for scripting, though the heap dumps must be used in a post-processing tool.
+jinfo
+Provides visibility into the system properties of the JVM, and allows some system properties to be set dynamically. Suitable for scripting.
+jstack
+Dumps the stacks of a Java process. Suitable for scripting.
+jstat
+Provides information about GC and class loading activities. Suitable for scripting.
+jvisualvm
+A GUI tool to monitor a JVM, profile a running application, and analyze JVM heap dumps (which is a post-processing activity, though jvisualvm can also take the heap dump from a live program).
+
+
+jcmd 51449 VM.uptime
+jcmd 51449 VM.system_properties
+jcmd 51449 VM.version
+jcmd 51449 VM.command_line
+jcmd 51449 VM.flagsjcmd 51449 VM.flags -all
+
+java other_options -XX:+PrintFlagsFinal -version
+
+sudo jinfo -flags 60816
+jinfo -flag PrintGCDetails 60816
+java -XX:+PrintFlagsFinal -jar appd-showcase-weather-app.jar
+jcmd 81840 Thread.print
