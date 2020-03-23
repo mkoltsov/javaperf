@@ -53,3 +53,5 @@ jcmd 81840 Thread.print
 jcmd 81840 VM.unlock_commercial_features
 jcmd 81840 JFR.start
 jcmd 81840 JFR.dump recording=1 filename=/tmp/rec1.jfr
+
+-XX:-TieredCompilation
