@@ -55,3 +55,17 @@ jcmd 81840 JFR.start
 jcmd 81840 JFR.dump recording=1 filename=/tmp/rec1.jfr
 
 -XX:-TieredCompilation
+
+assembly code cache is full, can be monitored via Memory Pool Code Cache in jconsole
+Java HotSpot(TM) 64-Bit Server VM warning: CodeCache is full.
+         Compiler has been disabled.
+Java HotSpot(TM) 64-Bit Server VM warning: Try increasing the
+         code cache size using -XX:ReservedCodeCacheSize=
+
+from java 11 code cache is split in 3 parts
+
+-XX:NonNMethodCodeHeapSize=N: for the nonmethod code
+
+-XX:ProfiledCodeHapSize=N for the profiled code
+
+-XX:NonProfiledCodeHapSize=N for the nonprofiled code
