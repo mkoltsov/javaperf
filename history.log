@@ -69,3 +69,22 @@ from java 11 code cache is split in 3 parts
 -XX:ProfiledCodeHapSize=N for the profiled code
 
 -XX:NonProfiledCodeHapSize=N for the nonprofiled code
+
+-XX:+PrintCompilation
+jstat -compiler 5003
+jstat -printcompilation 24144 1000
+
+0
+Interpreted code
+
+1
+Simple C1 compiled code
+
+2
+Limited C1 compiled code
+
+3
+Full C1 compiled code
+
+4
+C2 compiled code
