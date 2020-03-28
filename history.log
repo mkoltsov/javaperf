@@ -88,3 +88,44 @@ Full C1 compiled code
 
 4
 C2 compiled code
+------------compilation flags-----------
+-XX:CompileThreshold=N, default n = 10000 (makes sense in JDK =<7)
+
+-XX:Tier3InvocationThreshold=N (default 200) to get C1 to compile a method more quickly
+-XX:Tier4InvocationThreshold=N (default 5000) to get C2 to compile a method more quickly
+-XX:CICompilerCount=N
+-XX:+BackgroundCompilation
+---------------inlining flags-----------------
+-XX:-Inline
+-XX:+PrintInlining (if JVM bult from source)
+-XX:MaxFreqInlineSize=N
+-XX:MaxInlineSize=N
+-----------escape analysis------------
+-XX:+DoEscapeAnalysis, which is true by default
+------------CPU-specific code-------------------
+-XX:UseAVX=2
+-XX:UseSSE=N
+------------tiered compilation--------
+-XX:-TieredCompilation
+-XX:+TieredCompilation
+
+The -g option to include additional debugging information doesnât affect performance.
+Using the final keyword in your Java program doesnât produce faster compiled code.
+Recompiling with newer javac versions doesnât (usually) make programs any faster.
+
+------------graalVM--------------
+-XX:+UnlockExperimentalVMOptions, -XX:+EnableJVMCI, and -XX:+UseJVMCICompiler. The default for all those flags is false.
+
+----------AOT compilation----------------
+jaotc --compile-commands=/tmp/methods.txt \
+    --output JavaBaseFilteredMethods.so \
+    --compile-for-tiered \ #- makes eligible for C2 compilation 
+    --module java.base
+
+java -XX:+UnlockDiagnosticVMOptions -XX:+LogTouchedMethods \
+      -XX:+PrintTouchedMethodsAtExit <other arguments>
+
+java -XX:AOTLibrary=/path/to/JavaBaseFilteredMethods.so <other args>
+
+-XX:+PrintAOT
+      
