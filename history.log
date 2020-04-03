@@ -53,6 +53,7 @@ jcmd 81840 Thread.print
 jcmd 81840 VM.unlock_commercial_features
 jcmd 81840 JFR.start
 jcmd 81840 JFR.dump recording=1 filename=/tmp/rec1.jfr
+jcmd pid GC.run
 
 -XX:-TieredCompilation
 
@@ -117,6 +118,7 @@ Recompiling with newer javac versions doesnât (usually) make programs any faster
 -XX:+UnlockExperimentalVMOptions, -XX:+EnableJVMCI, and -XX:+UseJVMCICompiler. The default for all those flags is false.
 
 ----------AOT compilation----------------
+
 jaotc --compile-commands=/tmp/methods.txt \
     --output JavaBaseFilteredMethods.so \
     --compile-for-tiered \ #- makes eligible for C2 compilation 
@@ -128,4 +130,17 @@ java -XX:+UnlockDiagnosticVMOptions -XX:+LogTouchedMethods \
 java -XX:AOTLibrary=/path/to/JavaBaseFilteredMethods.so <other args>
 
 -XX:+PrintAOT
+
+---------------==============Garbage collection=========---------------------
+Enable serial collector - stops for old/young
+-XX:+UseSerialGC
+Enable parallel/throughput collector - also stops
+-XX:+UseParallelGC
+G1 GC - divides heap into regions, doesn't stop for collecting old gen, can compact OOTB
+-XX:+UseG1GC      
+CMS - has to stop to compact, replaced by G1GC
+-XX:+UseConcMarkSweepGC
+prevent jvm from responding to System.gc() calls that will do full GC
+-XX:+DisableExplicitGC
+      
       
