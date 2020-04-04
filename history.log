@@ -142,5 +142,32 @@ CMS - has to stop to compact, replaced by G1GC
 -XX:+UseConcMarkSweepGC
 prevent jvm from responding to System.gc() calls that will do full GC
 -XX:+DisableExplicitGC
-      
-      
+---------====================GC Tuning==============-----------------------
+-XmsN initial heap size
+-XmxN maximum heap size
+
+A good rule of thumb is to size the heap so that it is 30% occupied after a full GC. 
+To calculate this, run the application until it has reached a steady-state configuration: a point at which it has loaded anything it caches, 
+has created a maximum number of client connections, and so on. Then connect to the application with jconsole, force a full GC, 
+and observe how much memory is used when the full GC completes. (Alternately, for throughput GC, you can consult the GC log if it is available.) 
+If you take that approach, make sure to size your container (if applicable) to have an additional 0.5â1 GB of memory for nonheap needs of the JVM.
+-XX:NewRatio=N
+Set the ratio of the young generation to the old generation.
+
+-XX:NewSize=N
+Set the initial size of the young generation.
+
+-XX:MaxNewSize=N
+Set the maximum size of the young generation.
+
+-XmnN
+Shorthand for setting both NewSize and MaxNewSize to the same value.
+-XX:NewRatio=N
+Set the ratio of the young generation to the old generation.
+
+Initial Young Gen Size = Initial Heap Size / (1 + NewRatio)
+
+-XX:-UseAdaptiveSizePolicy
+adaptive sizing is also effectively turned off if the minimum and maximum heap sizes are set to the same value, 
+and the initial and maximum sizes of the new generation are set to the same value
+-XX:+PrintAdaptiveSizePolicy
