@@ -171,3 +171,29 @@ Initial Young Gen Size = Initial Heap Size / (1 + NewRatio)
 adaptive sizing is also effectively turned off if the minimum and maximum heap sizes are set to the same value, 
 and the initial and maximum sizes of the new generation are set to the same value
 -XX:+PrintAdaptiveSizePolicy
+
+------======Metaspace=======-------
+-XX:MetaspaceSize=N
+-XX:MaxMetaspaceSize=N
+jmap -clstats 52431 //classloader info
+
+-----=======Parallelism=======---
+
+-XX:ParallelGCThreads=N
+
+ParallelGCThreads = 8 + ((N - 8) * 5 / 8)
+
+-----======GC logging======--------
+-verbose:gc or -XX:+PrintGC
+-XX:+PrintGCDetails //more details
+-XX:+PrintGCTimeStamps or -XX:+PrintGCDateStamps //The difference in those two arguments is that the timestamps are relative to 0 (based on when the JVM starts), while the date stamps are an actual date string
+-Xloggc:filename flag. Using -Xloggc automatically enables the simple GC log unless PrintGCDetails has also been enabled.
+-XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=N -XX:GCLogFileSize=N
+-Xloggc:gc.log -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation
+-XX:NumberOfGCLogFile=8 -XX:GCLogFileSize=8m
+4 JDK >=11
+-Xlog:gc*:file=gc.log:time:filecount=7,filesize=8M //gc*,gc+age=debug
+jClarity (Censum) and GCeasy to analyze GC logs
+For real-time monitoring of the heap, use jvisualvm or jconsole
+
+jstat -gcutil 13607 1000
