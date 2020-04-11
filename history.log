@@ -171,6 +171,10 @@ Initial Young Gen Size = Initial Heap Size / (1 + NewRatio)
 adaptive sizing is also effectively turned off if the minimum and maximum heap sizes are set to the same value, 
 and the initial and maximum sizes of the new generation are set to the same value
 -XX:+PrintAdaptiveSizePolicy
+-XX:MaxGCPauseMillis=N
+-XX:GCTimeRatio=N
+T h r o u g h p u t G o a l = 1 - 1 (1+GCTimeRatio)
+G C T i m e R a t i o = Throughput (1-Throughput)
 
 ------======Metaspace=======-------
 -XX:MetaspaceSize=N
