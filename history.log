@@ -201,3 +201,10 @@ jClarity (Censum) and GCeasy to analyze GC logs
 For real-time monitoring of the heap, use jvisualvm or jconsole
 
 jstat -gcutil 13607 1000
+------======tuning G1====-------
+-XX:MaxGCPauseMillis=N //200 ms default
+-XX:ParallelGCThreads=N  //adjust the number of background threads
+-XX:ConcGCThreads=N //threads used for remarking
+ConcGCThreads = (ParallelGCThreads + 2) / 4
+-XX:InitiatingHeapOccupancyPercent=N //default value 45%
+-XX:G1MixedGCCountTarget=N //The default value for that is 8
