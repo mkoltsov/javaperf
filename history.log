@@ -208,3 +208,13 @@ jstat -gcutil 13607 1000
 ConcGCThreads = (ParallelGCThreads + 2) / 4
 -XX:InitiatingHeapOccupancyPercent=N //default value 45%
 -XX:G1MixedGCCountTarget=N //The default value for that is 8
+----=======Advanced Tuning=======--------
+-XX:InitialSurvivorRatio=N
+survivor_space_size = new_size / (initial_survivor_ratio + 2) //survivor_space_size = new_size / (initial_survivor_ratio + 2)
+//To keep the survivor spaces at a fixed size, set the SurvivorRatio to the desired value and disable the UseAdaptiveSizePolicy flag (though remember that disabling adaptive sizing will apply to the old and new generations as well).
+-XX:TargetSurvivorRatio=N
+-XX:InitialTenuringThreshold=N flag (the default is 7 for the throughput and G1 GC collectors, and 6 for CMS)
+-XX:MaxTenuringThreshold=N flag; for the throughput and G1 GC collectors, the default maximum threshold is 15, and for CMS it is 6.
+-XX:+AlwaysTenure //This is a rare situation; it means that objects will always be promoted to the old generation rather than stored in a survivor space.
+-XX:+NeverTenure (also false by default).// This flag affects two things: it behaves as if the initial and max tenuring thresholds are infinity, and it prevents the JVM from adjusting that threshold down. In other words, as long as there is room in the survivor space, no object will ever be promoted to the old generation.
+ -XX:+PrintTenuringDistribution (which is false by default). In JDK 11, it is added by including age*=debug or age*=trace to the Xlog argument.
