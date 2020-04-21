@@ -218,3 +218,12 @@ survivor_space_size = new_size / (initial_survivor_ratio + 2) //survivor_space_s
 -XX:+AlwaysTenure //This is a rare situation; it means that objects will always be promoted to the old generation rather than stored in a survivor space.
 -XX:+NeverTenure (also false by default).// This flag affects two things: it behaves as if the initial and max tenuring thresholds are infinity, and it prevents the JVM from adjusting that threshold down. In other words, as long as there is room in the survivor space, no object will ever be promoted to the old generation.
  -XX:+PrintTenuringDistribution (which is false by default). In JDK 11, it is added by including age*=debug or age*=trace to the Xlog argument.
+ 
+ -XX:-UseTLAB
+  -XX:+PrintTLAB //tlab*=trace 
+  -XX:TLABSize=N (the default value, 0, means to use the dynamic calculation previously described)
+  -XX:-ResizeTLAB (the default for that flag is true)
+  -XX:TLABWasteTargetPercent=N
+  -XX:TLABWasteIncrement=N (the default is 4)
+  -XX:MinTLABSize=N (the default is 2 KB)
+  
