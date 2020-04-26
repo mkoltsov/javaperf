@@ -226,4 +226,34 @@ survivor_space_size = new_size / (initial_survivor_ratio + 2) //survivor_space_s
   -XX:TLABWasteTargetPercent=N
   -XX:TLABWasteIncrement=N (the default is 4)
   -XX:MinTLABSize=N (the default is 2 KB)
+  -------===========G1 regions========--------
+  region_size = 1 << log(Initial Heap Size / 2048);
+  -XX:G1HeapRegionSize=N flag (the default is nominally 0, meaning to use the dynamic value just described)
+  select a value so that there will be close to 2,048 regions at the expected heap size.
   
+  AggressiveHeap flag (by default, false
+  -XX:MaxRAM=N
+  Default Xmx = MaxRAM / MaxRAMFraction
+  The maximum heap size is one-quarter of MaxRAM
+  -XX:MaxRAMFraction=N flag, which defaults to 4
+  -XX:ErgoHeapSizeLimit=N flag can also be set to a maximum default value that the JVM should use. That value is 0 by default (meaning to ignore it); otherwise, that limit is used if it is smaller than MaxRAM / MaxRAMFraction.
+  Default Xms =  MaxRAM / InitialRAMFraction //default value of the InitialRAMFraction flag is 64
+  
+  POLICY OVER CHOOSING A PROPER GC ALGORITHM
+  Can your application tolerate some full GC pauses?
+If not, G1 GC is the algorithm of choice. Even if you can tolerate some full pauses, G1 GC will often be better than parallel GC unless your application is CPU bound.
+
+Are you getting the performance you need with the default settings?
+Try the default settings first. As GC technology matures, the ergonomic (automatic) tuning gets better all the time. If youâre not getting the performance you need, make sure that GC is your problem. Look at the GC logs and see how much time youâre spending in GC and how frequently the long pauses occur. For a busy application, if youâre spending 3% or less time in GC, youâre not going to get a lot out of tuning (though you can always try to reduce outliers if that is your goal).
+
+Are the pause times that you have somewhat close to your goal?
+If they are, adjusting the maximum pause time may be all you need. If they arenât, you need to do something else. If the pause times are too large but your throughput is OK, you can reduce the size of the young generation (and for full GC pauses, the old generation); youâll get more, but shorter, pauses.
+
+Is throughput lagging even though GC pause times are short?
+You need to increase the size of the heap (or at least the young generation). More isnât always better: bigger heaps lead to longer pause times. Even with a concurrent collector, a bigger heap means a bigger young generation by default, so youâll see longer pause times for young collections. But if you can, increase the heap size, or at least the relative sizes of the generations.
+
+Are you using a concurrent collector and seeing full GCs due to concurrent-mode failures?
+If you have available CPU, try increasing the number of concurrent GC threads or starting the background sweep sooner by adjusting InitiatingHeapOccupancyPercent. For G1, the concurrent cycle wonât start if there are pending mixed GCs; try reducing the mixed GC count target.
+
+Are you using a concurrent collector and seeing full GCs due to promotion failures?
+In G1 GC, an evacuation failure (to-space overflow) indicates that the heap is fragmented, but that can usually be solved if G1 GC performs its background sweeping sooner and mixed GCs faster. Try increasing the number of concurrent G1 threads, adjusting InitiatingHeapOccupancyPercent, or reducing the mixed GC count target.
