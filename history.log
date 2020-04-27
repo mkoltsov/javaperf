@@ -257,3 +257,11 @@ If you have available CPU, try increasing the number of concurrent GC threads or
 
 Are you using a concurrent collector and seeing full GCs due to promotion failures?
 In G1 GC, an evacuation failure (to-space overflow) indicates that the heap is fragmented, but that can usually be solved if G1 GC performs its background sweeping sooner and mixed GCs faster. Try increasing the number of concurrent G1 threads, adjusting InitiatingHeapOccupancyPercent, or reducing the mixed GC count target.
+-----------=============Working with heap==============----------------
+jcmd 8998 GC.class_histogram //forces full GC
+jcmd 8998 GC.class_histogram -all //doesn't force full GC
+jmap -histo 37416 //doesn't force full GC as well
+jmap -histo:live process_id //forces full GC
+
+jcmd process_id GC.heap_dump /path/to/heap_dump.hprof //makes a head dump -all doesn't force full GC
+jmap -dump:live,file=/path/to/heap_dump.hprof process_id //live forces a full GC
