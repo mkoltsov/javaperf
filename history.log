@@ -265,3 +265,10 @@ jmap -histo:live process_id //forces full GC
 
 jcmd process_id GC.heap_dump /path/to/heap_dump.hprof //makes a head dump -all doesn't force full GC
 jmap -dump:live,file=/path/to/heap_dump.hprof process_id //live forces a full GC
+
+
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=<path>
+-XX:+HeapDumpAfterFullGC
+-XX:+HeapDumpBeforeFullGC
+-XX:+ExitOnOutOfMemoryError flag, which by default is false.
