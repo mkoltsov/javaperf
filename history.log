@@ -272,3 +272,43 @@ jmap -dump:live,file=/path/to/heap_dump.hprof process_id //live forces a full GC
 -XX:+HeapDumpAfterFullGC
 -XX:+HeapDumpBeforeFullGC
 -XX:+ExitOnOutOfMemoryError flag, which by default is false.
+
+3 ways to use less memory: reducing object size, using lazy initialization of objects, and using canonical objects.
+
+-----------=========indefinite references========---------
+soft references
+-XX:+PrintReferenceGC flag
+long ms = SoftRefLRUPolicyMSPerMB * AmountOfFreeMemoryInMB;
+if (now - last_access_to_reference > ms)
+   free the reference
+This code has two key values. The first value is set by the -XX:SoftRefLRUPolicyMSPerMB=N flag, which has a default value of 1,000.
+
+The second value is the amount of free memory in the heap (once the GC cycle has completed). The free memory in the heap is calculated based on the maximum possible size of the heap minus whatever is in use.
+To reclaim soft references more frequently, decrease the value of the SoftRefLRUPolicyMSPerMB flag. Setting that value to 500 means that a JVM with a 4 GB heap that is 75% full will reclaim objects not accessed in the past 512 seconds.
+
+It is as if we are saying to the JVM: ‚Hey, as long as someone else is interested in this object, let me know where it is, but if they no longer need it, throw it away and I will re-create it myself. 
+Compare that to a soft reference, which essentially says: ‚Hey, try to keep this around as long as there is enough memory and as long as it seems that someone is occasionally accessing it.
+WeakHashMap and WeakIdentityMap
+-------======finalizers======-----
+jcmd process_id GC.run_finalization
+jmap -finalizerinfo process_id
+-------=======compressed oops=====-------
+-XX:+UseCompressedOops flag; they are enabled by default whenever the maximum heap size is less than 32 GB.
+it is better to use heaps that are less than 32 GB, or heaps that are at least a few GB larger than 32 GB
+
+Much of that management centers around when and how to use special memory techniques: object pools, thread-local variables, and indefinite references. 
+Judicious use of these techniques can vastly improve the performance of an application, but overuse of them can just as easily degrade performance. 
+In limited quantities‚when the number of objects in question is small and bounded‚the use of these memory techniques can be quite effective.
+
+------============native memory==========---------
+-XX:NativeMemoryTracking=off|summary|detail
+jcmd process_id VM.native_memory summary
+-XX:+PrintNMTStatistics (by default, false), the JVM will print out information about the allocation when the program exits.
+jcmd process_id VM.native_memory baseline
+jcmd process_id VM.native_memory summary.diff
+-XX:-AutoShutdownNMT flag (by default, true).
+ -XX:MaxDirectMemorySize=N
+ 
+ ----========tuning native memory=========-----------
+ -XX:+UseLargePages
+ java -Xms4G -Xmx4G -XX:+UseLargePages -version //to check whether large pages work
